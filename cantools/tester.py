@@ -316,6 +316,12 @@ class Tester(object):
             if not message.periodic:
                 continue
 
+            # do not send messages which have cycle time 0 (passed the if
+            # above), but their TX method is Event, Spontaneous, etc. We only
+            # want to send the messages like Cyclic, CyclicAndSpontan, etc.
+            if not message.database.send_type.startswith('Cyclic'):
+                continue
+
             message.send_periodic_start()
 
         self._is_running = True
