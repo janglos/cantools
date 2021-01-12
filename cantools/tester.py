@@ -310,7 +310,7 @@ class Tester(object):
         """
 
         for message in self._messages.values():
-            if self._dut_name in message.database.senders:
+            if self._dut_name not in message.database.senders:
                 continue
 
             if not message.periodic:
