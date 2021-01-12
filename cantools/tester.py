@@ -338,6 +338,10 @@ class Tester(object):
         for message in self._messages.values():
             message.send_periodic_stop()
 
+        # the notifier needs to be stopped, otherwise it throws exception when
+        # we try to stop the bus (which it is appended to)
+        self._notifier.stop()
+
         self._is_running = False
 
     @property
