@@ -1245,11 +1245,18 @@ def _load_signals(tokens,
 
     def get_signal_spn(frame_id_dbc, name):
         signal_attributes = get_attributes(frame_id_dbc, name)
-        
+
         try:
             return signal_attributes['SPN'].value
         except (KeyError, TypeError):
             return None
+
+    def get_signal_initial_value_physical(frame_id_dbc, name, scale, offset):
+        raw_init_value = get_signal_initial_value(frame_id_dbc, name)
+        if raw_init_value is None:
+            return None
+        else:
+            return float(raw_init_value) * scale + offset
 
     signals = []
 
@@ -1263,7 +1270,10 @@ def _load_signals(tokens,
                                if signal[7] == '0'
                                else 'little_endian'),
                    is_signed=(signal[8] == '-'),
-                   initial=get_signal_initial_value(frame_id_dbc, signal[1][0]),
+                   initial=get_signal_initial_value_physical(frame_id_dbc,
+                                                             signal[1][0],
+                                                             num(signal[10]),
+                                                             num(signal[12])),
                    scale=num(signal[10]),
                    offset=num(signal[12]),
                    minimum=get_minimum(signal[15], signal[17]),
